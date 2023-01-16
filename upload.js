@@ -24,13 +24,6 @@ const storages = multer.diskStorage({
         cb(null, Date.now() + path.extname(files.originalname));
     }
 });
-const uploadfiles = multer({
-    storages: storages,
-    limits: { fileSize: 1000000 },
-    fileFilter: function (req, file, cb) {
-        checkFileType(file, cb)
-    }
-}).array('myImages', 10);
 
 function checkFileType(file, cb) {
     const fileTypes = /jpeg|jpg|png|gif/;
