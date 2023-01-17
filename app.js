@@ -1,15 +1,14 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const upload = require('./upload')
-
+const {upload, profile} = require('./upload')
 app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 
 app.get('/', (req, res) => {
 	res.render('index')
 })
-
+console.log("profile",profile);
 app.post('/upload', (req, res) => {
 	upload(req, res, (err) => {
 		if (err) {
@@ -32,14 +31,15 @@ app.post('/upload', (req, res) => {
 	});
 });
 
-app.post('/uploadfiles', (req, res) => {
-	uploadfiles(req, res, (err) => {
+app.post('/profile', (req, res) => {
+	profile(req, res, (err) => {
+		console.log("req.files profiles",req.file);
 		if (err) {
 			res.render('index', {
 				msgs: err
 			});
 		} else {
-			if (req.files == undefined) {
+			if (req.file == undefined) {
 				res.render('index', {
 					msgs: 'Error: No File Selected'
 				});
@@ -47,7 +47,7 @@ app.post('/uploadfiles', (req, res) => {
 			else {
 				res.render('index', {
 					msgs: 'Files Uploaded!',
-					files: `uploadfiles/${req.files.filename}`
+					files: `profile/${req.file.filename}`
 				});
 			}
 		}

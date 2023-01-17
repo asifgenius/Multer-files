@@ -19,18 +19,18 @@ const upload = multer({
 }).single('myImage');
 
 const storages = multer.diskStorage({
-    destination: './public/moreUploads',
-    filename: function (req, files, cb) {
-        cb(null, Date.now() + path.extname(files.originalname));
+    destination: './public/profile',
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
     }
 });
-const uploadfiles = multer({
-    storages: storages,
+const profile = multer({
+    storage: storages,
     limits: { fileSize: 1000000 },
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb)
     }
-}).array('myImages', 10);
+}).single('profile');
 
 function checkFileType(file, cb) {
     const fileTypes = /jpeg|jpg|png|gif/;
@@ -43,4 +43,4 @@ function checkFileType(file, cb) {
     }
 }
 
-module.exports = upload, uploadfiles;
+module.exports = { upload, profile };
