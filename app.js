@@ -1,17 +1,17 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const upload = require('./upload')
 
+const { fileUpload } = require('./upload')
 app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 
 app.get('/', (req, res) => {
 	res.render('index')
 })
-
 app.post('/upload', (req, res) => {
-	upload(req, res, (err) => {
+	const uploadFiles = fileUpload('./public/uploads').single('myImage');
+	uploadFiles(req, res, (err) => {
 		if (err) {
 			res.render('index', {
 				msg: err
@@ -24,22 +24,24 @@ app.post('/upload', (req, res) => {
 			}
 			else {
 				res.render('index', {
-					msg: 'File Uploaded!',
+					msg: 'Files Uploaded!',
 					file: `uploads/${req.file.filename}`
 				});
 			}
 		}
-	});
+	})
 });
 
-app.post('/uploadfiles', (req, res) => {
-	uploadfiles(req, res, (err) => {
+app.post('/profile', (req, res) => {
+	const uploadFiles = fileUpload('./public/profile').single('profile');
+	uploadFiles(req, res, (err) => {
+		console.log("req.files profiles", req.file);
 		if (err) {
 			res.render('index', {
 				msgs: err
 			});
 		} else {
-			if (req.files == undefined) {
+			if (req.file == undefined) {
 				res.render('index', {
 					msgs: 'Error: No File Selected'
 				});
@@ -47,11 +49,11 @@ app.post('/uploadfiles', (req, res) => {
 			else {
 				res.render('index', {
 					msgs: 'Files Uploaded!',
-					files: `uploadfiles/${req.files.filename}`
+					files: `profile/${req.file.filename}`
 				});
 			}
 		}
-	});
+	})
 });
 
 app.listen(port, () => {
